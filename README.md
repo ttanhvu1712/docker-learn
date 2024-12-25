@@ -22,6 +22,7 @@
 - `docker run -it image_id` => run image and expose an interactive session
 - `docker run --rm image_id` => automatically remove container after finished
 - `docker run --name image_id` => assign name to new container
+- `docker run -v volume_name:folder_path image_id` => start an new named volume and attach it for container folder
 
 8. List running container:
 
