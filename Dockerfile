@@ -8,8 +8,11 @@ RUN npm install
 
 COPY . .
 
+# Adding argument to the default port 80
+ARG DEFAULT_PORT=80
+
 # Set the environment variable PORT to 80
-ENV PORT 80
+ENV PORT $DEFAULT_PORT
 
 EXPOSE $PORT
 

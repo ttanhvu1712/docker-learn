@@ -72,10 +72,15 @@ Proper ways to restart an interactive container with `docker start -a -i contain
   - `docker pull IMAGE_NAME` to pull image. Optional if you want to pull image only.
   - `docker run IMAGE_NAME` to run image. You could call this command instantly without pull, docker will try to find the image locally, if it is not available, then it should pull from remote published docker hubs
 
-#### Setting up env
+#### Setting up run time env and build time arg
 
 We have 3 ways to setting the env variable before running container
 
-- Adding default env in Dockerfile with ENV
+- Adding default env in Dockerfile with `ENV ENV_NAME ENV_VALUE`
 - Used -e / --env flag in `docker run` command: `docker run -e PORT=80 -e BE_HOST=redaction.ecom.vn image_name`
 - Adding .env file to root folder and use `--env-file ./.env` with docker run command `docker run --env-file ./.env image_name`
+
+To adding arg in build time of image, we have also 2 ways:
+
+- Adding arg in Dockerfile with `ARG ARG_NAME=ARG_VALUE`
+- Used --build-arg flag in `docker build` command: `docker build --build-arg DEFAULT_PORT=80 -t name:tags path_docker_file_directory`
