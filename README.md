@@ -22,7 +22,13 @@
 - `docker run -it image_id` => run image and expose an interactive session
 - `docker run --rm image_id` => automatically remove container after finished
 - `docker run --name image_id` => assign name to new container
-- `docker run -v volume_name:folder_path image_id` => start an new named volume and attach it for container folder
+- `docker run -v volume_config image_id` => created volume to store data along with container. `volume_config` could be:
+  - Anonymous volume `docker run -v container_path image_id` => this volume created each time we run container, remove container with `-rm` flag with remove the volume instantly. This volume is controlled by docker. Example: `docker run -v /app/node_modules image_id`
+  - Named volume `docker run -v volume_name:container_path image_id` => this volume will persist across container with same volume_name. It wont be remove after container removed. Example: `docker run -v feedback-loop:/app/feedback image_id`
+  - Bind mounted volume `docker run -v "host_path:container_path image_id"` => mount a host volume into container. This volume is hosted from local machine, change in the host_path will override the container path Example
+    - `docker run -v "/Users/vutran/Documents/Learning/docker-learns:/app" image_id`
+    - `docker run -v $(pwd):/app image_id` => short cut command in MacOs / Linux
+    - `docker run -v $(pwd):/app image_id:ro` => config `ro` to make volume become read-only for container.
 
 8. List running container:
 
@@ -65,3 +71,11 @@ Proper ways to restart an interactive container with `docker start -a -i contain
 - Use:
   - `docker pull IMAGE_NAME` to pull image. Optional if you want to pull image only.
   - `docker run IMAGE_NAME` to run image. You could call this command instantly without pull, docker will try to find the image locally, if it is not available, then it should pull from remote published docker hubs
+
+#### Setting up env
+
+We have 3 ways to setting the env variable before running container
+
+- Adding default env in Dockerfile with ENV
+- Used -e / --env flag in `docker run` command: `docker run -e PORT=80 -e BE_HOST=redaction.ecom.vn image_name`
+- Adding .env file to root folder and use `--env-file ./.env` with docker run command `docker run --env-file ./.env image_name`
