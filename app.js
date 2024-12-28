@@ -70,7 +70,9 @@ app.get("/people", async (req, res) => {
 // To run mongoose, follow the instruction in https://www.mongodb.com/docs/manual/tutorial/install-mongodb-community-with-docker/ to run the mongo docker container first
 mongoose.connect(
   // "mongodb://localhost:27017/swfavorites", // this url for running app on local machine
-  "mongodb://host.docker.internal:27017/swfavorites", // this url for running app on docker container
+  // "mongodb://host.docker.internal:27017/swfavorites", // this url for running app on docker container that call to localhost endpoint in local machine
+  // "mongodb://172.17.0.2:27017/swfavorites", // this url for running app on docker container that call to ip address of mongo container
+  "mongodb://mongodb:27017/swfavorites", // this url for running app on docker container that call to domain of mongo container inside of created docket network, see how create and use network in README.
   { useNewUrlParser: true },
   (err) => {
     if (err) {

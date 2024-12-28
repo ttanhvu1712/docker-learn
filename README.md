@@ -84,3 +84,12 @@ To adding arg in build time of image, we have also 2 ways:
 
 - Adding arg in Dockerfile with `ARG ARG_NAME=ARG_VALUE`
 - Used --build-arg flag in `docker build` command: `docker build --build-arg DEFAULT_PORT=80 -t name:tags path_docker_file_directory`
+
+#### Networking
+
+To communicate between container with call container api directly on its name, we need to run all containers on same network
+
+1. create new separately network on docker: `docker network create network_name`
+2. run first container in the created network: `docker run --name container_name_1 --network network_name image_name_1`
+3. coding other app to call `container_name_1` api via domain: `http://container_name_1:port_number/....`
+4. re-build image and run other container in the same network: `docker run --name container_name_2 --network network_name image_name_2`
