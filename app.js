@@ -1,7 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const axios = require("axios").default;
-// const mongoose = require("mongoose");
+const mongoose = require("mongoose");
 
 const Favorite = require("./models/favorite");
 
@@ -67,16 +67,16 @@ app.get("/people", async (req, res) => {
   }
 });
 
-app.listen(3000);
-
-// mongoose.connect(
-//   'mongodb://localhost:27017/swfavorites',
-//   { useNewUrlParser: true },
-//   (err) => {
-//     if (err) {
-//       console.log(err);
-//     } else {
-//       app.listen(3000);
-//     }
-//   }
-// );
+// To run mongoose, follow the instruction in https://www.mongodb.com/docs/manual/tutorial/install-mongodb-community-with-docker/ to run the mongo docker container first
+mongoose.connect(
+  // "mongodb://localhost:27017/swfavorites", // this url for running app on local machine
+  "mongodb://host.docker.internal:27017/swfavorites", // this url for running app on docker container
+  { useNewUrlParser: true },
+  (err) => {
+    if (err) {
+      console.log(err);
+    } else {
+      app.listen(3000);
+    }
+  }
+);
