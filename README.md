@@ -87,9 +87,9 @@ To adding arg in build time of image, we have also 2 ways:
 
 #### Networking
 
-To communicate between container with call container api directly on its name, we need to run all containers on same network
+To communicate between container with call container api directly on its name (_without expose port from container to local machine_), we need to run all containers on same network
 
 1. create new separately network on docker: `docker network create network_name`
-2. run first container in the created network: `docker run --name container_name_1 --network network_name image_name_1`
+2. run first container in the created network: `docker run --name container_name_1 --network network_name image_name_1` (**NO NEED TO EXPOSE PORT TO LOCAL MACHINE FOR USAGE**)
 3. coding other app to call `container_name_1` api via domain: `http://container_name_1:port_number/....`
 4. re-build image and run other container in the same network: `docker run --name container_name_2 --network network_name image_name_2`
