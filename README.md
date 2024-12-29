@@ -12,4 +12,4 @@ To run app follow these step
 
    b. Build and run BE service: `docker build -t backend .`, `docker run --name backend -d --rm -p 80:80 --network my-net -v /Users/vutran/Documents/Learning/docker-learn/backend:/app:ro -v logs:/app/logs -v /app/node_modules --env-file ./.env backend`
 
-3. In FE folder, run FE SPA `docker run --name frontend -d --rm -p 3000:3000 frontend`
+3. In FE folder, run FE SPA: `docker build -t frontend .`, `docker run --name frontend -d --rm -p 3000:3000 frontend`
