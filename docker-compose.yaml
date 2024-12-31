@@ -1,0 +1,67 @@
+## Detach mode should be declared with docker-compose up -d
+## And remove container with docker-compose down
+version: "3.8"
+services:
+  mongodb:
+    ## Define image, container name to run container
+    image: mongo:latest
+    container_name: mongodb
+    ## Define volume to run container, if it is named volume, it should be declared in volumes section
+    volumes:
+      - mongodb:/data/db
+    ## 2 ways to pass environment variables to container
+    # environment:
+    #   - MONGO_INITDB_ROOT_USERNAME=vutran
+    #   - MONGO_INITDB_ROOT_PASSWORD=123456
+    env_file: ./backend/.env
+    ## Container in docker compose run same network by default, but we could specify it too
+    # networks:
+    #   - my-net
+
+  backend:
+    ## Defined how to to build image from docker compose
+    # build: # => used if we have Dockerfile in another directory with context path
+    #   context: ./backend
+    #   dockerfile: Dockerfile
+    #   args: ... args to pass to Dockerfile
+    build: ./backend # => used if we have Dockerfile in the same directory with context path
+    ## Define image, container name to run container
+    image: backend:latest
+    container_name: backend
+    ## Define port to run container
+    ports:
+      - "80:80"
+    ## Define volume to run container, if it is named volume, it should be declared in volumes section
+    volumes:
+      - ./backend:/app:ro # => could also used the absolute path here
+      - logs:/app/logs
+      - /app/node_modules
+    ## Pass environment variables to container
+    env_file: ./backend/.env
+    ## Define dependency to run container, if not, BE container could be fail to run
+    depends_on:
+      - mongodb
+
+  frontend:
+    ## Defined how to to build image from docker compose
+    build: ./frontend
+    ## Define image, container name to run container
+    image: frontend:latest
+    container_name: frontend
+    ## Define port to run container
+    ports:
+      - "3000:3000"
+    ## Define volume to run container, if it is named volume, it should be declared in volumes section
+    volumes:
+      - ./frontend/src:/app/src:ro # => could also used the absolute path here
+    ## Run container in it mode
+    stdin_open: true
+    tty: true
+    ## Define dependency to run container, if not, BE container could be fail to run
+    depends_on:
+      - backend
+
+# All named volume should be declared here, but not anonymous and bind mount volume
+volumes:
+  mongodb:
+  logs:
