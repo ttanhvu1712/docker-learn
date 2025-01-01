@@ -25,6 +25,8 @@ services:
     ## Just need to turn on bind mount for development
     # volumes:
     #   - ./src:/var/www/html:delegate #=> delegate is for batch update from src to container
+    depends_on:
+      - mysql
 
   mysql:
     image: arm64v8/mysql:8.0
@@ -52,10 +54,11 @@ services:
       - ./src:/var/www/html
     entrypoint: ["php", "/var/www/html/artisan"] # => override dockerfile directly from docker-compose.yaml
 
-  npm:
-    image: node:14
-    container_name: node
-    working_dir: /var/www/html
-    entrypoint: ["npm"]
-    volumes:
-      - ./src:/var/www/html
+
+  # npm:
+  #   image: node:14
+  #   container_name: node
+  #   working_dir: /var/www/html
+  #   entrypoint: ["npm"]
+  #   volumes:
+  #     - ./src:/var/www/html
