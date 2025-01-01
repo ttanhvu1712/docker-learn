@@ -1,25 +1,30 @@
 version: "3.8"
 services:
   nginx:
-    image: nginx:stable-alpine
+    build:
+      context: .
+      dockerfile: ./dockerfiles/nginx.dockerfile
+    image: nginx
     container_name: nginx
     ports:
       - "8000:80"
-    volumes:
-      - ./src:/var/www/html
-      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    ## Just need to turn on bind mount for development
+    # volumes:
+    #   - ./src:/var/www/html
+    #   - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
     depends_on:
       - php
       - mysql
 
   php:
     build:
-      context: ./dockerfiles
-      dockerfile: php.dockerfile
+      context: .
+      dockerfile: ./dockerfiles/php.dockerfile
     image: php
     container_name: php
-    volumes:
-      - ./src:/var/www/html #=> delegate is for batch update from src to container
+    ## Just need to turn on bind mount for development
+    # volumes:
+    #   - ./src:/var/www/html:delegate #=> delegate is for batch update from src to container
 
   mysql:
     image: arm64v8/mysql:8.0
@@ -27,6 +32,7 @@ services:
     env_file:
       - ./env/mysql.env
 
+  # These container below is util container, just used in development then no need to COPY src code with Dockerfile
   composer:
     build:
       context: ./dockerfiles
@@ -38,8 +44,8 @@ services:
 
   artisan:
     build:
-      context: ./dockerfiles
-      dockerfile: php.dockerfile
+      context: .
+      dockerfile: ./dockerfiles/php.dockerfile
     image: artisan
     container_name: artisan
     volumes:
