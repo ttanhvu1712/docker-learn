@@ -1,0 +1,36 @@
+version: "3.8"
+services:
+  sever:
+    image: nginx:stable-alpine
+    # container_name: nginx
+    ports:
+      - "8000:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+
+  php:
+    build:
+      context: ./dockerfiles
+      dockerfile: php.dockerfile
+    image: php
+    # container_name: php
+    volumes:
+      - ./src:/var/www/html:delegated #=> delegate is for batch update from src to container
+
+  mysql:
+    image: mysql:5.7
+    # container_name: mysql
+    env_file:
+      - ./env/mysql.env
+
+  composer:
+    build:
+      context: ./dockerfiles
+      dockerfile: composer.dockerfile
+    image: composer
+    # container_name: composer
+    volumes:
+      - ./src:/app
+
+  # artisan:
+  # npm;
