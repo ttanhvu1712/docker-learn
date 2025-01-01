@@ -1,25 +1,29 @@
 version: "3.8"
 services:
-  sever:
+  nginx:
     image: nginx:stable-alpine
-    # container_name: nginx
+    container_name: nginx
     ports:
       - "8000:80"
     volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./src:/var/www/html
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - php
+      - mysql
 
   php:
     build:
       context: ./dockerfiles
       dockerfile: php.dockerfile
     image: php
-    # container_name: php
+    container_name: php
     volumes:
-      - ./src:/var/www/html:delegated #=> delegate is for batch update from src to container
+      - ./src:/var/www/html #=> delegate is for batch update from src to container
 
   mysql:
-    image: mysql:5.7
-    # container_name: mysql
+    image: arm64v8/mysql:8.0
+    container_name: mysql
     env_file:
       - ./env/mysql.env
 
@@ -28,9 +32,24 @@ services:
       context: ./dockerfiles
       dockerfile: composer.dockerfile
     image: composer
-    # container_name: composer
+    container_name: composer
     volumes:
       - ./src:/app
 
-  # artisan:
-  # npm;
+  artisan:
+    build:
+      context: ./dockerfiles
+      dockerfile: php.dockerfile
+    image: artisan
+    container_name: artisan
+    volumes:
+      - ./src:/var/www/html
+    entrypoint: ["php", "/var/www/html/artisan"] # => override dockerfile directly from docker-compose.yaml
+
+  npm:
+    image: node:14
+    container_name: node
+    working_dir: /var/www/html
+    entrypoint: ["npm"]
+    volumes:
+      - ./src:/var/www/html
