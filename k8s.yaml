@@ -1,0 +1,46 @@
+--- # separate objects markdown
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: k8s-deployment 
+  labels:
+    group: example
+spec:
+  replicas: 1 # number of pods to be created.
+  selector: # define pods to be managed by this deployment object, in this case is the one with metadata app:k8s-pod.
+    matchLabels:
+      app: k8s-pod  
+    # matchExpressions:
+    # - { key: app, operator: In, values: [k8s-pod] }
+  template: # template to create pods if it is necessary
+    metadata:
+      labels:
+        app: k8s-pod
+    spec:
+      containers:
+      - name:  k8s-container
+        image: ttanhvu1712/k8s:1.0.0
+        imagePullPolicy: Always # always pull the image from the repository, event there is a cache image in the local machine.
+        livenessProbe: # define the health check for the pod, used incase that the default health check is not enough.
+          httpGet:
+            path: /
+            port: 8080 
+          periodSeconds: 10
+          initialDelaySeconds: 5
+        ports:
+          - containerPort: 8080
+--- # separate objects markdown
+apiVersion: v1
+kind: Service
+metadata:
+  name: k8s-service
+  labels:
+    group: example
+spec:
+  selector: # define the pods to be connect to this service network, in this case is the one with metadata app:k8s-pod.
+    app: k8s-pod
+  ports: # define the port to be exposed to the outside world.
+    - protocol: 'TCP'
+      port: 80
+      targetPort: 8080
+  type: LoadBalancer # define the network type.
